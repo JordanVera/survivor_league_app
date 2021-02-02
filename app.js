@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -17,7 +19,7 @@ const app = express();
 require('./config/passport')(passport);
 
 // DB Config
-const db = require('./config/keys').MongoURI;
+const db = process.env.MongoURI;
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {console.log('MONGODB Connected')})
