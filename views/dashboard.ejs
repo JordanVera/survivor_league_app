@@ -1,0 +1,12 @@
+<%- include('partials/header'); %>
+<a href="/users/logout" class="btn btn-secondary">Logout</a>
+<div class="container">
+  <div class="col-md-6 m-auto">
+    <div class="card card-body">
+      <h1 class="text-center mb-3">Dashboard</h1>
+      <p>The Date is now <b><%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(new Date()) %></b> 
+        and the time is now <b><%= new Date().toLocaleTimeString() %></b></p>
+    </div>
+  </div>
+  
+</div>
