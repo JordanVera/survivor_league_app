@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
 dotenv.config();
 
+const client = new MongoClient(process.env.MongoURI);
+
 const NflGame = require('./models/NflGame');
 
 function get_teams() {
@@ -11,11 +13,11 @@ function get_teams() {
       axios.get(`https://api.sportsdata.io/api/nfl/odds/json/GameOddsByWeek/${process.env.SEASON}/1?key=${process.env.API_KEY}`),
     ])
     .then((responseArr) => {
+      const db = client.db('nfl_games');
+
       let weeks = [];
       responseArr[0].data.forEach((element) => {
-        // console.log(element.HomeTeamName);
-        // console.log(element.AwayTeamName);
-        // console.log('----------------------------')
+        
         const newNflGame = new NflGame({
           homeTeamName: element.HomeTeamName,
           awayTeamName: element.AwayTeamName,
@@ -24,7 +26,9 @@ function get_teams() {
           dateTime: element.DateTime
         });
 
-        newNflGame.save();
+        const collection = db.collection('week1')
+
+        collection.insertOne(newNflGame);
         console.log(newNflGame);
 
       });
