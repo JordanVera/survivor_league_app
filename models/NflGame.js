@@ -17,6 +17,10 @@ const NflGameSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  seasonType:  {
+    type: Number,
+    required: true
+  },
   week: {
     type: Number,
     required: true
