@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon --experimental-modules app.js",
-    "get_teams": "nodemon --experimental-modules getTeams.js"
+    "get_teams": "node --experimental-modules ./server/api/schedule/getTeams.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

@@ -4,10 +4,8 @@ const { MongoClient } = require('mongodb');
 const chalk = require('chalk');
 dotenv.config();
 
-const scheduleRepo = require('./repos/scheduleRepo.js');
-
-
-const NflGame = require('./models/NflGame');
+const scheduleRepo = require('./scheduleRepo.js');
+const NflGame = require('./NflGame');
 
 function get_teams() {
   axios

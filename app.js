@@ -4,8 +4,8 @@ const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const indexRouter = require('./server/index');
+const usersRouter = require('./server/api/user/users');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
@@ -72,7 +72,7 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
+})
 
 
 app.listen(port, () => {
