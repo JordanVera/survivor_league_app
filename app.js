@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const indexRouter = require('./server/index');
-const usersRouter = require('./server/api/user/users');
+const usersRouter = require('./server/api/user/userRoutes');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
@@ -16,7 +16,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
 
-require('./config/passport')(passport);
+require('./server/config/passport')(passport);
 
 // DB Config
 const db = process.env.MongoURI;
