@@ -4,10 +4,10 @@ const { MongoClient } = require('mongodb');
 const chalk = require('chalk');
 dotenv.config();
 
-const scheduleRepo = require('./scheduleRepo.js');
-const NflGame = require('./NflGame');
+const scheduleRepo = require('./scheduleController.js');
+const NflGame = require('./scheduleModel');
 
-function get_teams() {
+function getSchedule() {
   axios
     .all([
       axios.get(`https://api.sportsdata.io/api/nfl/odds/json/GameOddsByWeek/${process.env.SEASON}/1?key=${process.env.API_KEY}`),
@@ -341,10 +341,10 @@ function get_teams() {
 
       seedDb();
 
-      console.log(chalk.cyanBright.bold(`DB Successfully seeded with data from the ${process.env.SEASON} which included ${weeks.length} games`));
+      console.log(chalk.cyanBright.bold(`DB Successfully seeded with data from the ${process.env.SEASON} season which included ${weeks.length} games`));
 
     })
     .catch((err) => console.log(err));
 }
 
-get_teams();
+getSchedule();
