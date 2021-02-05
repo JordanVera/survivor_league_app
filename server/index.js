@@ -1,17 +1,14 @@
 const express = require('express');
-const router = express.Router();
-const { ensureAuthenticated } = require('../server/config/auth');
-
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('welcome');
-});
-
-router.get('/dashboard', ensureAuthenticated, (req, res, next) => {
-  res.render('dashboard', {
-    name: req.user.name
-  });
-});
+const app = express();
+const api = require('./api/api');
 
 
-module.exports = router;
+const indexRouter = require('./api/index/indexRouter');
+const usersRouter = require('../server/api/user/userRoutes');
+
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
+
+module.exports = app;

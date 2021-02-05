@@ -87,3 +87,14 @@ exports.getLogout = (req, res, next) => {
   req.flash('success_msg', 'You are logged out');
   res.redirect('/users/login');
 }
+
+exports.buyBullet = (req, res, next) => {
+
+  User.findByIdAndUpdate(req.user._id, { $inc: { bullets: 1 }}, { returnNewDocument: true }, async function(err, result){ 
+  if (err) {
+    console.log(err)
+  }
+  console.log(await req.user);
+  res.redirect('/dashboard');
+  })
+}
