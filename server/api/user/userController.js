@@ -9,8 +9,8 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/users/login',
+    successRedirect: '/api/dashboard',
+    failureRedirect: 'api/users/login',
     failureFlash: true
   })(req, res, next);
 }
@@ -85,16 +85,15 @@ exports.getLogout = (req, res, next) => {
   req.logout();
 
   req.flash('success_msg', 'You are logged out');
-  res.redirect('/users/login');
+  res.redirect('api/users/login');
 }
 
 exports.buyBullet = (req, res, next) => {
-
   User.findByIdAndUpdate(req.user._id, { $inc: { bullets: 1 }}, { returnNewDocument: true }, async function(err, result){ 
   if (err) {
     console.log(err)
   }
   console.log(await req.user);
-  res.redirect('/dashboard');
+  res.redirect('/api/dashboard');
   })
 }
