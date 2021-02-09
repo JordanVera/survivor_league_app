@@ -2,7 +2,6 @@ const User = require('./userModel');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
-
 exports.getLogin = (req, res, next) => {
   res.render('login');
 }
@@ -10,7 +9,7 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/api/dashboard',
-    failureRedirect: 'api/users/login',
+    failureRedirect: '/api/users/login',
     failureFlash: true
   })(req, res, next);
 }
@@ -71,7 +70,7 @@ exports.postRegister = (req, res, next) => {
               newUser.save()
                 .then(user => {
                   req.flash('success_msg', 'You are now registered and can log in');
-                  res.redirect('/users/login');
+                  res.redirect('/api/users/login');
                 })
                 .catch(err => console.log(err))
             });
@@ -85,7 +84,7 @@ exports.getLogout = (req, res, next) => {
   req.logout();
 
   req.flash('success_msg', 'You are logged out');
-  res.redirect('api/users/login');
+  res.redirect('/api/users/login');
 }
 
 exports.buyBullet = (req, res, next) => {
