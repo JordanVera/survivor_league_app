@@ -5,28 +5,86 @@
   <div class="col-md-8 m-auto">
     <ul class="nav justify-content-center mt-5 mb-5">
       <li class="nav-item">
-        <a class="nav-link"href="#">Make Your Pick</a>
+        <a class="nav-link" href="#">Make Your Pick</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link"href="#">Dashboard</a>
+        <a class="nav-link" href="#">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link"href="https://www.nfl.com/schedules/" target="_blank">Schedule</a>
+        <a class="nav-link" href="https://www.nfl.com/schedules/" target="_blank">Schedule</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link"href="#">Rules</a>
+        <a class="nav-link" href="#">Rules</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link"href="#">Message Board</a>
+        <a class="nav-link" href="#">Message Board</a>
       </li>
     </ul>
   </div>
   <div class="col-md-6 m-auto">
     <div class="card card-body">
       <h1 class="text-center mb-3">Dashboard</h1>
-      <p>The Date is now <b><%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(new Date()) %></b> 
+      <p>There is a total of <%= users.length %> users with a total of <%= bullets %> bullets</p>
+      <p>The Date is now
+        <b><%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(new Date()) %></b>
         and the time is now <b><%= new Date().toLocaleTimeString() %></b></p>
     </div>
   </div>
+
+  <div class="mt-5 mb-5">
   
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Player</th>
+          <th scope="col">Week &nbsp;1</th>
+          <th scope="col">Week &nbsp;2</th>
+          <th scope="col">Week &nbsp;3</th>
+          <th scope="col">Week &nbsp;4</th>
+          <th scope="col">Week &nbsp;5</th>
+          <th scope="col">Week &nbsp;6</th>
+          <th scope="col">Week &nbsp;7</th>
+          <th scope="col">Week &nbsp;8</th>
+          <th scope="col">Week &nbsp;9</th>
+          <th scope="col">Week 10</th>
+          <th scope="col">Week 11</th>
+          <th scope="col">Week 12</th>
+          <th scope="col">Week 13</th>
+          <th scope="col">Week 14</th>
+          <th scope="col">Week 15</th>
+          <th scope="col">Week 16</th>
+          <th scope="col">Week 17</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(function(user){ %>
+          <% for(i=0; i < user.bullets; i++){ %>
+            <tr>
+              <th><%= `${user.name} (${i})` %></th>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>         
+          <% }; %>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>  
 </div>
