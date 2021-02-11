@@ -96,3 +96,18 @@ exports.buyBullet = (req, res, next) => {
   res.redirect('/api/dashboard');
   })
 }
+
+exports.makePicks = (req, res, next) => {
+  const picks = req.body;
+  // const thisUser = User.findById(req.user._id, (err, result) => {
+  //   console.log(thisUser);  
+  // }) 
+  // console.log(thisUser);
+  User.findByIdAndUpdate(req.user._id, { picks: { 'week-1': picks } }, { returnNewDocument: true }, async function(err, result){ 
+    if (err) {
+      console.log(err)
+    }
+    console.log(await req.user);
+    res.redirect('/api/dashboard');
+    });
+}

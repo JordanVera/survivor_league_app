@@ -16,6 +16,9 @@ router.route('/logout')
 router.route('/buyBullet')
   .get(controller.buyBullet);
 
+router.route('/makePicks')
+  .post(controller.makePicks);
+
 
 
 

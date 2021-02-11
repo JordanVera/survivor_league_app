@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
   bullets: {
     type: Number,
     default: 0
-  }
+  },
+  picks: []
 });
 
 const User = mongoose.model('User', UserSchema);

@@ -1,26 +1,26 @@
-const express = require('express');
-const router = express.Router();
 const User = require('../user/userModel');
-const { ensureAuthenticated } = require('../../config/auth');
 const _ = require('lodash');
 
-
-router.get('/dashboard', ensureAuthenticated, async (req, res, next) => {
+exports.dashboard = async (req, res, next) => {
+  const user = req.user;
   const users = await User.find({ bullets: { $gt: 0 } });
   let bulletsArr = [];
+  let picks = [];
 
   users.forEach(user => {
    bulletsArr.push(user.bullets);
-  })
+  });
+
+  users.forEach(user => {
+    picks.push(user.picks);
+  });
 
   const bullets = _.sum(bulletsArr);
 
   res.render('dashboard', {
+    user,
     users,
-    bullets
+    bullets,
+    picks
   });
-});
-
-module.exports = router;
-
-
+}
