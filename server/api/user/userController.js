@@ -1,6 +1,8 @@
 const User = require('./userModel');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const _ = require('lodash');
+const chalk = require('chalk');
 
 exports.getLogin = (req, res, next) => {
   res.render('login');
@@ -97,17 +99,45 @@ exports.buyBullet = (req, res, next) => {
   })
 }
 
-exports.makePicks = (req, res, next) => {
+exports.makePicks = async (req, res, next) => {
   const picks = req.body;
-  // const thisUser = User.findById(req.user._id, (err, result) => {
-  //   console.log(thisUser);  
-  // }) 
-  // console.log(thisUser);
-  User.findByIdAndUpdate(req.user._id, { picks: { 'week-1': picks } }, { returnNewDocument: true }, async function(err, result){ 
-    if (err) {
-      console.log(err)
+  const { week } = req.params;
+  try {
+   
+    let result = await User.findById(req.user._id);
+    const data = { [`week-${week}`]: picks };
+    const allPicks = [...result.picks];
+    
+    if (allPicks.length > 0) {
+
+      // Search index of peek
+      const pickIndex = _.findIndex(allPicks, (pick) => {
+        return Object.keys(pick)[0] == `week-${week}`;
+      });
+
+      // If found, update it
+      if (pickIndex !== -1) {
+        console.log(chalk.green("true"));
+        allPicks[pickIndex] = data;
+      }
+      // Otherwise, push new pick
+      else {
+        console.log(chalk.red("false"));
+        allPicks.push(data);
+      }
+
+    } else {
+      allPicks.push(data);
+      console.log(chalk.yellow('results.picks is empty'))
     }
-    console.log(await req.user);
-    res.redirect('/api/dashboard');
-    });
-}
+
+    result.picks = allPicks;
+
+    console.log('allPicks', allPicks);
+    
+    await result.save();
+    res.redirect("/api/dashboard");
+  } catch (error) {
+    console.log(error);
+  }
+};
