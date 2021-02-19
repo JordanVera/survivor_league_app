@@ -110,7 +110,7 @@ exports.makePicks = async (req, res, next) => {
     
     if (allPicks.length > 0) {
 
-      // Search index of peek
+      // Search index of pick
       const pickIndex = _.findIndex(allPicks, (pick) => {
         return Object.keys(pick)[0] == `week-${week}`;
       });
@@ -120,6 +120,7 @@ exports.makePicks = async (req, res, next) => {
         console.log(chalk.green("true"));
         allPicks[pickIndex] = data;
       }
+
       // Otherwise, push new pick
       else {
         console.log(chalk.red("false"));
@@ -132,7 +133,6 @@ exports.makePicks = async (req, res, next) => {
     }
 
     result.picks = allPicks;
-
     console.log('allPicks', allPicks);
     
     await result.save();
@@ -141,3 +141,4 @@ exports.makePicks = async (req, res, next) => {
     console.log(error);
   }
 };
+

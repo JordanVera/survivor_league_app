@@ -4,6 +4,7 @@ const _ = require('lodash');
 exports.dashboard = async (req, res, next) => {
   const user = req.user;
   const users = await User.find({ bullets: { $gt: 0 } });
+  let bullets = {};
   let bulletsArr = [];
   let picks = [];
 
@@ -15,12 +16,29 @@ exports.dashboard = async (req, res, next) => {
     picks.push(user.picks);
   });
 
-  const bullets = _.sum(bulletsArr);
+  picks.forEach(user => {
+    user.forEach((week) => {
+      const [key, b] = Object.entries(week)[0];
+      const weekN = key.split("-")[1] - 1;
+    
+      Object.entries(b).forEach(([bullet, value]) => {
+        if (!bullets[bullet]) {
+          bullets[bullet] = {};
+        }
+    
+        bullets[bullet][weekN] = value;
+      });
+    });
+  })   
+
+  console.log(bullets)
+
+  const totalUserBullets = _.sum(bulletsArr);
 
   res.render('dashboard', {
     user,
     users,
-    bullets,
-    picks
+    bullets: totalUserBullets,
+    picks: bullets
   });
 }

@@ -6,6 +6,6 @@ const usersRouter = require('./user/userRoutes');
 
 
 router.use('/', dashboardRouter);
-router.use('/users', usersRouter);
+router.use('/users', usersRouter); 
 
 module.exports = router;

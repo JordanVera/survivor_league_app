@@ -1,4 +1,5 @@
 <%- include('partials/header'); %>
+<% console.log(picks) %>
 <% const teamsArr = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX',
 'KC', 'LAC', 'LAR', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG','NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS' ] %>
 <a href="/api/users/logout" class="btn btn-secondary">Logout</a>
@@ -60,28 +61,14 @@
       </thead>
       <tbody>
         <% users.forEach(function(user){ %>
-        <% for(i=0; i < user.bullets; i++){ %>
-        <tr id="<%= `${user.name}-${i}` %>">
-          <th><%= `${user.name} (${i})` %></th>
-          <td class="week-1"></td>
-          <td class="week-2"></td>
-          <td class="week-3"></td>
-          <td class="week-4"></td>
-          <td class="week-5"></td>
-          <td class="week-6"></td>
-          <td class="week-7"></td>
-          <td class="week-8"></td>
-          <td class="week-9"></td>
-          <td class="week-10"></td>
-          <td class="week-11"></td>
-          <td class="week-12"></td>
-          <td class="week-13"></td>
-          <td class="week-14"></td>
-          <td class="week-15"></td>
-          <td class="week-16"></td>
-          <td class="week-17"></td>
-        </tr>
-        <% }; %>
+          <% for(i=0; i < user.bullets; i++){ %>
+            <tr id="<%= `${user.name}-${i}` %>">
+              <th><%= `${user.name} (${i})` %></th>
+              <% for(let j = 0; j < 17; j++){ %>
+                <td><%= picks[`${user.name}-${i}`][j] %></td>
+              <% } %>
+            </tr>
+          <% }; %>
         <% }); %>
       </tbody>
     </table>
@@ -98,6 +85,7 @@
               class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
+          <p class="text-danger" style="size: 12px">***Please notice you must make all your picks for all of your bullets at the same time.  If you want to update a certain bullet, please make sure to also replace your picks for your other bullets as they will be changed upon each form submission.  Always check the table after updating to make sure.***</p>
           <div class="accordion" id="accordionExample">
             <div class="accordion-item" >
               <h4 class="accordion-header" id="headingOne">
@@ -109,7 +97,6 @@
               <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                 data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                  <% console.log(picks) %>
                   <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/1">
                     <% for(i=0; i < user.bullets; i++){ %>
                     <div class="form-group">
@@ -149,6 +136,42 @@
                     <% }; %>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                   </form>
+                  <script>
+                    const forms = document.querySelectorAll('#exampleModal form');
+                    const user = '<%= user.name %>'';
+
+                    forms.forEach((form, formIndex) => {     
+                      return;
+                                       
+                      form.addEventListener('submit', e => {
+                        e.preventDefault();
+                        
+                        let valid = true;
+                        
+                        form.querySelectorAll('.form-group').forEach((group, index) => {
+                          const selection = group.querySelector('select').value;
+                          
+                          console.log('selection of week', index + 1, selection)
+
+                          document.querySelectorAll(`table tr[id*="${user}"]`).forEach(row => {
+                            const cSelection = row.querySelector(`td:nth-child(${index + 1})`).innerHTML
+                            
+                            console.log('other selection', cSelection);
+
+                            if (cSelection === selection) {
+                              valid = false;
+                              console.log('invalid', cSelection, selection);
+                            }
+                          })
+                        });
+  
+                        if (!valid) {
+                          e.preventDefault();
+                          alert('Invalid data!');
+                        }
+                      })
+                    });
+                  </script>
                 </div>
               </div>
             </div>
