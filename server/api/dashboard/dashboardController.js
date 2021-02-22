@@ -39,6 +39,7 @@ exports.dashboard = async (req, res, next) => {
     user,
     users,
     bullets: totalUserBullets,
-    picks: bullets
+    picks: bullets,
+    sPicks: JSON.stringify(bullets)
   });
 }
