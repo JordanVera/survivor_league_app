@@ -329,8 +329,7 @@ function getSchedule() {
         weeks.push(newNflGame);
       });
       
-      async function seedDb() {
-        const dbName = 'schedule';
+      async function seedDbWinners() {
         const client = new MongoClient(process.env.MongoURI);
         await client.connect();
 
@@ -339,9 +338,19 @@ function getSchedule() {
         client.close();
       }
 
-      seedDb();
+      async function seedDbLosers() {
+        const client = new MongoClient(process.env.MongoURI);
+        await client.connect();
 
-      console.log(chalk.cyanBright.bold(`DB Successfully seeded with data from the ${process.env.SEASON} season which included ${weeks.length} games`));
+        const results = await scheduleRepo.loadSchedule(weeks);
+        
+        client.close();
+      }
+
+      seedDbWinners();
+      seedDbLosers();
+
+      console.log(chalk.cyanBright.bold(`Winners and losers object successfully seeded into MongoDB with data from the ${process.env.SEASON} season.`));
 
     })
     .catch((err) => console.log(err));

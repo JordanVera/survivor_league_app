@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "nodemon --experimental-modules app.js",
-    "getSchedule": "node --experimental-modules ./server/api/schedule/getSchedule.js"
+    "getSchedule": "node --experimental-modules ./server/api/schedule/getSchedule.js",
+    "scores": "node --experimental-modules ./server/api/gameScores/getScores.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

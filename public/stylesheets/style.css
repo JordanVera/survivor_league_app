@@ -6,3 +6,25 @@ body {
 a {
   color: #00B7FF;
 }
+
+tr {
+  border-bottom: 1px solid #282828;
+}
+
+td {
+  border-top: none !important;
+}
+
+td.bullet-loss {
+  color: red;
+}
+
+td.bullet-loss ~ td {
+  display: none;
+}
+
+.header-logo {
+  height: 50px;
+}
+
+

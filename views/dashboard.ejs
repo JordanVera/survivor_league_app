@@ -1,8 +1,6 @@
-<%- include('partials/header'); %>
-<% console.log(picks) %>
+<%- include('partials/dashboardHeader'); %>
 <% const teamsArr = ['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX',
 'KC', 'LAC', 'LAR', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG','NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS' ] %>
-<a href="/api/users/logout" class="btn btn-secondary">Logout</a>
 <a href="/api/users/buyBullet" class="btn btn-warning">Buy Bullet</a>
 <div class="container">
   <div class="col-md-8 m-auto">
@@ -29,14 +27,12 @@
   <div class="col-md-6 m-auto">
     <div class="card card-body">
       <h3 class="text-center mb-3"><%= user.name %>'s Dashboard</h3>
-      <p>There is a total of <%= users.length %> users with a total of <%= bullets %> bullets</p>
+      <p>There is a total of <%= users.length %> users with a total of <%= totalUserBullets %> bullets</p>
       <p>The Date is now
         <b><%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(new Date()) %></b>
         and the time is now <b><%= new Date().toLocaleTimeString() %></b></p>
     </div>
   </div>
-
-  
 
   <div class="table-responsive mt-5">
     <table class="table">
@@ -67,8 +63,16 @@
           <% for(i=0; i < user.bullets; i++){ %>
             <tr id="<%= `${user.name}-${i}` %>">
               <th><%= `${user.name} (${i})` %></th>
-              <% for(let j = 0; j < 17; j++){ %>
-                <td><%= (picks[`${user.name}-${i}`] || {})[j] %></td>
+              <% for(let week = 0; week < 17; week++){
+                const bullet = (bullets[`${user.name}-${i}`] || {});
+                const pick = bullet[week];
+                const className = bullet.missingWeek === week
+                  ? 'bullet-loss'
+                  : '';
+              %>
+                <td class="<%= className %>">
+                  <%= pick %>
+                </td>
               <% } %>
             </tr>
           <% }; %>
@@ -102,7 +106,6 @@
   </div>
 </div>
 
-
 <!-- Make Your Picks Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
@@ -120,343 +123,86 @@
           other bullets as they will be changed upon each form submission. <strong style="font-size: 16px;"> Always
             check the table after updating to make sure. </strong>***</p>
         <div id="accordion">
+          <% for(let i = 1; i <= 10; i++){ %>
           <div class="card">
-            <div class="card-header" id="headingOne">
+            <div class="card-header" id="heading-<%= i %>">
               <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-                  aria-controls="collapseOne">
-                  Week 1
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-<%= i %>" aria-expanded="true"
+                  aria-controls="collapse-<%= i %>">
+                  Week <%= i %>
                 </button>
               </h5>
             </div>
 
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div id="collapse-<%= i %>" class="collapse" aria-labelledby="heading-<%= i %>" data-parent="#accordion">
               <div class="card-body">
                 <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/1">
-                  <% for(i=0; i < user.bullets; i++){ %>
+                  <% playingBullets.forEach((bullet) => { %>
                   <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
+                    <label for="<%= `${user.name}-${bullet}` %>">Make your pick for bullet <%= `${bullet}` %></label>
+                    <select class="form-control" name="<%= `${user.name}-${bullet}` %>" id="<%= `${user.name}-${bullet}` %>">
                       <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
+                        <option><%= team %></option>
                       <% }) %>
                     </select>
                   </div>
-                  <% }; %>
+                  <% }); %>
                   <button type="submit" class="btn btn-primary">Save changes</button>
                 </form>
               </div>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-header" id="headingTwo">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
-                  aria-expanded="false" aria-controls="collapseTwo">
-                  Week 2
-                </button>
-              </h5>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/2">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header" id="headingThree">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
-                  aria-expanded="false" aria-controls="collapseThree">
-                  Week 3
-                </button>
-              </h5>
-            </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/3">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
+
+            <% }; %>
           </div>
 
+          <script>
+            const forms = document.querySelectorAll('#exampleModal form');
+            const user = '<%= user.name %>';
+            let userRows = document.querySelectorAll(`table tr[id*="${user}"]`);
+            userRows = Array.from(userRows).map(row => {
+              return Array.from(row.children).slice(1).map(cell => cell.innerHTML).filter(cell => cell)
+            })
 
-          <div class="card">
-            <div class="card-header" id="headingFour">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true"
-                  aria-controls="collapseFour">
-                  Week 4
-                </button>
-              </h5>
-            </div>
+            console.log('userRows', userRows)
 
-            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/4">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
+            // Form index is actually the week index
+            forms.forEach((form, formIndex) => {
 
+              form.addEventListener('submit', e => {
+                let valid = true;
+                const errors = [];
 
-          <div class="card">
-            <div class="card-header" id="headingFive">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true"
-                  aria-controls="collapseFive">
-                  Week 5
-                </button>
-              </h5>
-            </div>
+                form.querySelectorAll('.form-group').forEach((group, rowIndex) => {
+                  const selection = group.querySelector('select').value;
+                  console.log('selection for', rowIndex, selection)
+                  // ARI -> rowIndex
+                  // Gets the cells of the rest of the weeks (remove this one by comparing the index)
+                  const row = userRows[rowIndex].filter((c, index) => index !== formIndex);
+                  console.log('row', row);
 
-            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/5">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
+                  if (row.includes(selection)) {
+                    valid = false;
+                    const errorMsg = 'Selection ' + selection + ' from ' + rowIndex + ' found in ' +
+                      row;
+                    errors.push(errorMsg)
+                    // throw error
+                  }
+                });
 
+                if (!valid) {
+                  e.preventDefault();
+                  console.log('errors', errors)
+                  alert(
+                    'You cannot pick the same team more than once in the same bullet. Please check the table for clarification.'
+                    );
 
-          <div class="card">
-            <div class="card-header" id="headingSix">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSix" aria-expanded="true"
-                  aria-controls="collapseSix">
-                  Week 6
-                </button>
-              </h5>
-            </div>
+                  // Stops function
+                  return;
+                }
+              })
+            });
+          </script>
 
-            <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/6">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="card">
-            <div class="card-header" id="headingSeven">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="true"
-                  aria-controls="collapseSeven">
-                  Week 7
-                </button>
-              </h5>
-            </div>
-
-            <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/7">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header" id="headingEight">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseEight" aria-expanded="true"
-                  aria-controls="collapseEight">
-                  Week 8
-                </button>
-              </h5>
-            </div>
-
-            <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/8">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header" id="headingNine">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseNine" aria-expanded="true"
-                  aria-controls="collapseNine">
-                  Week 9
-                </button>
-              </h5>
-            </div>
-
-            <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/9">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header" id="headingTen">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTen" aria-expanded="true"
-                  aria-controls="collapseTen">
-                  Week 10
-                </button>
-              </h5>
-            </div>
-
-            <div id="collapseTen" class="collapse" aria-labelledby="headingTen" data-parent="#accordion">
-              <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/10">
-                  <% for(i=0; i < user.bullets; i++){ %>
-                  <div class="form-group">
-                    <label for="<%= `${user.name}-${i}` %>">Make your pick for bullet <%= `${i}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${i}` %>" id="<%= `${user.name}-${i}` %>">
-                      <% teamsArr.forEach(team => { %>
-                      <option value="<%= team %>"><%= team %></option>
-                      <% }) %>
-                    </select>
-                  </div>
-                  <% }; %>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-                <!-- This script validates that Each pick is unique for that particular bullet -->
-                <script>
-                  const forms = document.querySelectorAll('#exampleModal form');
-                  const user = '<%= user.name %>';
-                  let userRows = document.querySelectorAll(`table tr[id*="${user}"]`);
-                  userRows = Array.from(userRows).map(row => {
-                    return Array.from(row.children).slice(1).map(cell => cell.innerHTML).filter(cell => cell)
-                  })
-
-                  console.log('userRows', userRows)
-
-                  // Form index is actually the week index
-                  forms.forEach((form, formIndex) => {
-
-                    form.addEventListener('submit', e => {
-                      let valid = true;
-                      const errors = [];
-
-                      form.querySelectorAll('.form-group').forEach((group, rowIndex) => {
-                        const selection = group.querySelector('select').value;
-                        console.log('selection for', rowIndex, selection)
-                        // ARI -> rowIndex
-                        // Gets the cells of the rest of the weeks (remove this one by comparing the index)
-                        const row = userRows[rowIndex].filter((c, index) => index !== formIndex);
-                        console.log('row', row);
-
-                        if (row.includes(selection)) {
-                          valid = false;
-                          const errorMsg = 'Selection ' + selection + ' from ' + rowIndex + ' found in ' +
-                            row;
-                          errors.push(errorMsg)
-                          // throw error
-                        }
-                      });
-
-                      if (!valid) {
-                        e.preventDefault();
-                        console.log('errors', errors)
-                        alert(
-                          'You cannot pick the same team more than once in the same bullet. Please check the table for clarification.'
-                          );
-
-                        // Stops function
-                        return;
-                      }
-                    })
-                  });
-                </script>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -465,6 +211,5 @@
     </div>
   </div>
 </div>
-
 
 </div> <!-- container -->
