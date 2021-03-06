@@ -1,14 +1,19 @@
-const axios = require("axios");
-const dotenv = require("dotenv");
-const { MongoClient } = require("mongodb");
-const chalk = require("chalk");
-const util = require("util");
+/* eslint-disable no-plusplus */
+/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
+/* eslint-disable comma-dangle */
+const axios = require('axios');
+const dotenv = require('dotenv');
+const { MongoClient } = require('mongodb');
+const chalk = require('chalk');
+const util = require('util');
+
 dotenv.config();
 
 const scoresRepo = require('./scoresController.js');
-const NflGame = require("./scoresModel");
 
 function getSchedule() {
+  // eslint-disable-next-line no-unused-vars
   return new Promise((resolve, reject) => {
     axios
       .all([
@@ -31,7 +36,7 @@ function getSchedule() {
         axios.get(`https://api.sportsdata.io/api/nfl/odds/json/ScoresByWeek/${process.env.SEASON}/17?key=${process.env.API_KEY}`)
       ])
       .then((responseArr) => {
-        let winners = {
+        const winners = {
           week1: [],
           week2: [],
           week3: [],
@@ -51,7 +56,7 @@ function getSchedule() {
           week17: [],
         };
 
-        let losers = {
+        const losers = {
           week1: [],
           week2: [],
           week3: [],
@@ -72,57 +77,53 @@ function getSchedule() {
         };
 
         for (let i = 0; i < 17; i++) {
-          const weekN = `week${i+1}`;
+          const weekN = `week${i + 1}`;
           const winnerWeek = winners[weekN];
           const loserWeek = losers[weekN];
 
           responseArr[i].data.forEach((element) => {
             if (element.AwayScore > element.HomeScore) {
-              // console.log(chalk.red("Away team won"));
+              console.log(chalk.red('Away team won'));
               winnerWeek.push(element.AwayTeam);
               loserWeek.push(element.HomeTeam);
             } else if (element.AwayScore === element.HomeScore) {
-              // console.log(chalk.blue(`Game was a tie, both teams lost`));
+              console.log(chalk.blue('Game was a tie, both teams lost'));
               loserWeek.push(element.HomeTeam);
               loserWeek.push(element.AwayTeam);
             } else {
-              // console.log(chalk.green("Home Team won"));
+              console.log(chalk.green('Home Team won'));
               winnerWeek.push(element.HomeTeam);
               loserWeek.push(element.AwayTeam);
             }
           });
         }
 
-        // console.log(util.inspect(winners, { showHidden: false, depth: null }));
-        // console.log(util.inspect(losers, { showHidden: false, depth: null }));
+        console.log(util.inspect(winners, { showHidden: false, depth: null }));
+        console.log(util.inspect(losers, { showHidden: false, depth: null }));
 
-        // async function seedDbWinners() {
-        //   const client = new MongoClient(process.env.MongoURI);
-        //   await client.connect();
+        async function seedDbWinners() {
+          const client = new MongoClient(process.env.MongoURI);
+          await client.connect();
 
-        //   const results = await scoresRepo.loadWinners(winners);
-          
-        //   client.close();
-        // }
+          const results = await scoresRepo.loadWinners(winners);
+          client.close();
+        }
 
-        // async function seedDbLosers() {
-        //   const client = new MongoClient(process.env.MongoURI);
-        //   await client.connect();
+        async function seedDbLosers() {
+          const client = new MongoClient(process.env.MongoURI);
+          await client.connect();
 
-        //   const results = await scoresRepo.loadLosers(losers);
-          
-        //   client.close();
-        // }
+          const results = await scoresRepo.loadLosers(losers);
+          client.close();
+        }
 
-        // seedDbWinners();
-        // seedDbLosers();
+        seedDbWinners();
+        seedDbLosers();
 
         resolve({ winners, losers });
       })
       .catch((err) => console.log(err));
   });
 }
-
-// getSchedule().then(wl => console.log(chalk.cyanBright.bold(`Winners and Losers obj Successfully seeded with data from the ${process.env.SEASON} season`)));
 
 module.exports = getSchedule;

@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -21,6 +22,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  customerId: '',
   picks: []
 });
 

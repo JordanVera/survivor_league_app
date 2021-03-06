@@ -5,12 +5,16 @@
   "scripts": {
     "start": "nodemon --experimental-modules app.js",
     "getSchedule": "node --experimental-modules ./server/api/schedule/getSchedule.js",
-    "scores": "node --experimental-modules ./server/api/gameScores/getScores.js"
+    "scores": "node --experimental-modules ./server/api/gameScores/getScores.js",
+    "buyBullet": "node ./server/api/buyBullet/bs.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "chalk": "^3.0.0",
+    "coinpayments": "^2.1.1",
+    "coinqvest-merchant-sdk": "^0.0.4",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -22,6 +26,7 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "lodash": "^4.17.20",
+    "mongodb": "^3.6.3",
     "mongoose": "^5.11.14",
     "morgan": "~1.9.1",
     "passport": "^0.4.1",
@@ -29,6 +34,8 @@
   },
   "devDependencies": {
     "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.7"
   }
 }

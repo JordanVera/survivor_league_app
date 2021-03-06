@@ -3,24 +3,24 @@ const mongoose = require('mongoose');
 const NflGameSchema = new mongoose.Schema({
   awayTeam: {
     type: String,
-    required: true
+    required: true,
   },
   homeTeam: {
     type: String,
-    required: true
+    required: true,
   },
   awayScore: {
     type: Number,
-    required: true
+    required: true,
   },
   homeScore: {
     type: Number,
-    required: true
+    required: true,
   },
-  week:  {
+  week: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const NflGame = mongoose.model('NflGame', NflGameSchema);

@@ -1,16 +1,20 @@
-const User = require("../user/userModel");
-const _ = require("lodash");
-const gamesScores = require("../gameScores/getScores.js");
+/* eslint-disable no-console */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-shadow */
+const _ = require('lodash');
 
-exports.dashboard = async (req, res, next) => {
-  const user = req.user;
+const User = require('../user/userModel');
+const gamesScores = require('../gameScores/getScores.js');
+
+exports.dashboard = async (req, res) => {
+  const { user } = req;
   const users = await User.find({ bullets: { $gt: 0 } });
   const { losers } = await gamesScores();
-  let bullets = {};
-  let bulletsArr = [];
-  let picks = [];
+  const bullets = {};
+  const bulletsArr = [];
+  const picks = [];
 
-  console.log("Losers:", losers);
+  console.log('Losers:', losers);
 
   users.forEach((user) => {
     picks.push(user.picks);
@@ -20,7 +24,7 @@ exports.dashboard = async (req, res, next) => {
   picks.forEach((user) => {
     user.forEach((week) => {
       const [key, b] = Object.entries(week)[0];
-      const weekN = key.split("-")[1] - 1;
+      const weekN = key.split('-')[1] - 1;
 
       Object.entries(b).forEach(([bullet, value]) => {
         if (!bullets[bullet]) {
@@ -39,7 +43,7 @@ exports.dashboard = async (req, res, next) => {
 
     // console.log(bulletNumber, userName);
 
-    let userWeeks = Object.values(bullets[bullet] || {});
+    const userWeeks = Object.values(bullets[bullet] || {});
 
     // There should not be a loser pick inside of userWeeks
     return !userWeeks.some((weekPick, weekIndex) => {
@@ -48,10 +52,7 @@ exports.dashboard = async (req, res, next) => {
       const some = loserWeek.includes(weekPick);
 
       if (some) {
-        console.log(
-          `${weekPick} of week ${weekIndex + 1} is inside`,
-          loserWeek
-        );
+        console.log(`${weekPick} of week ${weekIndex + 1} is inside`, loserWeek);
         bullets[bullet].missingWeek = weekIndex;
       }
 
@@ -61,26 +62,26 @@ exports.dashboard = async (req, res, next) => {
 
   users.forEach((u) => {
     const pb = Array(u.bullets)
-      .fill("")
+      .fill('')
       .map((v, index) => index)
       .filter((bulletNumber) => filter(bulletNumber, u.name));
 
     console.log(u.email, user.email, u.email == user.email);
 
     if (u.email == user.email) {
-      console.log("Playing bullets for user", user.email, pb);
+      console.log('Playing bullets for user', user.email, pb);
       playingBullets = pb;
     }
   });
 
   const totalUserBullets = _.sum(bulletsArr);
 
-  console.log("User", user);
-  console.log("Users", users);
-  console.log("playingBullets", playingBullets);
-  console.log("Bullets", bullets);
+  console.log('User', user);
+  console.log('Users', users);
+  console.log('playingBullets', playingBullets);
+  console.log('Bullets', bullets);
 
-  res.render("dashboard", {
+  res.render('dashboard', {
     user,
     users,
     bullets,

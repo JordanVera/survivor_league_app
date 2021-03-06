@@ -31,8 +31,10 @@
       <p>The Date is now
         <b><%= new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: 'long', day: '2-digit'}).format(new Date()) %></b>
         and the time is now <b><%= new Date().toLocaleTimeString() %></b></p>
+
     </div>
   </div>
+
 
   <div class="table-responsive mt-5">
     <table class="table">
@@ -81,7 +83,6 @@
     </table>
   </div>
 
-
 <!-- Rules Modal -->
 <div class="modal fade" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -101,6 +102,45 @@
           <li>A team may only be selected once during the regular season (i.e., if you pick the Giants in week 1, you may not select the Giants again for the remainder of the regular season). Slates are wiped clean for the playoffs. If the pool continues into the playoffs, you can use each team one more time.</li>
           <li>You continue in the pool until a loss (or tie) is suffered, then you're out. YES, TIES ARE LOSSES!</li>
         </ol> 
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Buy Bullets Modal -->
+<div class="modal fade" id="bulletsModal" tabindex="-1" role="dialog" aria-labelledby="bulletsModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bulletsModalLabel">Buy Bullets</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form
+        class="mt-3 mb-3"
+        method="POST"
+        action="/api/bullets/buyBullets"
+      >
+      <div class="form-group">
+      <label>How many bullets do you want?</label>
+        <select class="custom-select" name="bulletCount">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+     
+      </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </form>
       </div>
     </div>
   </div>
@@ -136,11 +176,20 @@
 
             <div id="collapse-<%= i %>" class="collapse" aria-labelledby="heading-<%= i %>" data-parent="#accordion">
               <div class="card-body">
-                <form class="mt-3 mb-3" method="POST" action="/api/users/makePicks/1">
+                <form
+                  class="mt-3 mb-3"
+                  method="POST"
+                  action="/api/users/makePicks/<%= i %>"
+                >
                   <% playingBullets.forEach((bullet) => { %>
                   <div class="form-group">
-                    <label for="<%= `${user.name}-${bullet}` %>">Make your pick for bullet <%= `${bullet}` %></label>
-                    <select class="form-control" name="<%= `${user.name}-${bullet}` %>" id="<%= `${user.name}-${bullet}` %>">
+                    <label for="<%= `${user.name}-${bullet}` %>">
+                      Make your pick for bullet <%= `${bullet}` %>
+                    </label>
+                    <select
+                      class="form-control"
+                      name="<%= `${user.name}-${bullet}` %>"
+                      id="<%= `${user.name}-${bullet}` %>">
                       <% teamsArr.forEach(team => { %>
                         <option><%= team %></option>
                       <% }) %>
@@ -160,7 +209,7 @@
             const user = '<%= user.name %>';
             let userRows = document.querySelectorAll(`table tr[id*="${user}"]`);
             userRows = Array.from(userRows).map(row => {
-              return Array.from(row.children).slice(1).map(cell => cell.innerHTML).filter(cell => cell)
+              return Array.from(row.children).slice(1).map(cell => cell.innerHTML.trim()).filter(cell => cell)
             })
 
             console.log('userRows', userRows)
